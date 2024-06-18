@@ -1,113 +1,562 @@
+"use client";
+import { useRef, useState } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { TextPlugin } from "gsap/TextPlugin";
+
+// --------------------------------------------
+
 import Image from "next/image";
+//gsap
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+//utility
+import { cn } from "./lib/helpers";
 
-export default function Home() {
+//data + assests
+import { pavuk_putnik } from "./lib/data";
+import paperlines from "../public/assets/paper/paperlines.png";
+import topleft from "../public/assets/paper/topleft.png";
+import mrak2 from "../public/assets/clouds/mrak2.png";
+import mrak1 from "../public/assets/clouds/mrak1.png";
+import trava from "../public/assets/pavuk_putnik/trava.png";
+import javor1 from "../public/assets/leaves/javor1.png";
+import javor2 from "../public/assets/leaves/javor2.png";
+import javor3 from "../public/assets/leaves/javor3.png";
+import javor4 from "../public/assets/leaves/javor4.png";
+import pavukimg from "../public/assets/pavuk_putnik/pavuk.png";
+import sarkanimg from "../public/assets/pavuk_putnik/sarkan.png";
+import smallhouse from "../public/assets/houses/smallhouse.png";
+import tallhouse from "../public/assets/houses/tallhouse.png";
+import skies from "../public/assets/sky/try.png";
+import hills from "../public/assets/green/hills.png";
+import hill1 from "../public/assets/green/hill1.png";
+import labelrough from "../public/assets/paper/labelrough.png";
+import person from "../public/assets/people/person.png";
+
+import {
+  archivo_narrow,
+  league_spartan,
+  libre_baskerville,
+  lora,
+  six_caps,
+  source_sans_3,
+} from "./lib/fonts";
+
+//register gsap = text plugin
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(useGSAP, ScrollTrigger, TextPlugin);
+}
+
+// ---------------------------------------------
+
+// if (typeof window !== "undefined") {
+//   gsap.registerPlugin(useGSAP, TextPlugin);
+// }
+
+//use slovnicek instead of title
+//use background image or video as hading background text
+// slovnicek on hover can sscramble into meaning
+
+// const titles = [
+//   "Trnava",
+//   "Zvonárik Tadeáš",
+//   "Igricova pieseň",
+//   "Sestra Izabela",
+//   "Janičiar",
+//   "Majster Jakub",
+//   "Ondrej a Ráchel",
+//   "Anntónio Spazzo",
+//   "Mlynárová dcéra",
+//   "Sambucusov dom",
+//   "Katovo šťastie",
+//   "Sedem koscov",
+//   "Požiar",
+//   "Pekárová láska",
+//   "Hlas zvonu",
+// ];
+
+const titles = [
+  "Snenie",
+  "Môj kamarát",
+  "Jarný ples",
+  "Lienkina túžba",
+  "Pavúk pútnik",
+];
+
+export default function Page() {
+  const pageContainer = useRef<HTMLElement | any>();
+  const sectionContainer = useRef<HTMLElement | any>();
+  const poemContainer = useRef<HTMLElement | any>();
+  const leavesContainer = useRef<HTMLElement | any>();
+  const list = useRef<HTMLElement | any>();
+  const pavuk = useRef<HTMLElement | any>();
+  const sarkan = useRef<HTMLElement | any>();
+  const scrollTimeline = useRef<GSAPTimeline | any>();
+  const leavesTimeline = useRef<GSAPTimeline | any>();
+  const cloudsTimeline = useRef<GSAPTimeline | any>();
+
+  useGSAP(
+    () => {
+      const paragraphs = gsap.utils.toArray("li");
+      const leaves = gsap.utils.toArray(".leaf");
+      const clouds = gsap.utils.toArray(".mrak");
+
+      scrollTimeline.current = gsap.timeline({
+        onComplete: () => console.log("completed"),
+        onUpdate: () => {
+          console.log(Math.floor(scrollTimeline.current.progress() * 100));
+          if (Math.floor(scrollTimeline.current.progress() * 100) === 32) {
+            gsap.to(sarkan.current, {
+              x: pageContainer.current.getBoundingClientRect().width,
+              y: -150,
+              duration: 20,
+              ease: "sine.inOut",
+            });
+          }
+          if (Math.floor(scrollTimeline.current.progress() * 100) === 60) {
+            gsap.to(pavuk.current, {
+              y: pageContainer.current.getBoundingClientRect().height,
+              x: 300,
+              rotate: 360,
+              duration: 15,
+              ease: "sine.inOut",
+            });
+          }
+        },
+        scrollTrigger: {
+          scroller: poemContainer.current,
+          trigger: list.current,
+          scrub: true,
+          start: "top bottom",
+          end: `+=${list.current.getBoundingClientRect().height}`,
+          // markers: true,
+        },
+      });
+      leavesTimeline.current = gsap.timeline({});
+      cloudsTimeline.current = gsap.timeline({});
+
+      paragraphs.forEach((paragraph, i) =>
+        scrollTimeline.current.from(paragraph, {
+          opacity: 0,
+        }),
+      );
+      leavesTimeline.current.to(
+        ".leaf",
+        {
+          y: `${pageContainer.current.getBoundingClientRect().height}px`,
+          duration: 15,
+          stagger: {
+            grid: "auto",
+            from: "random",
+            amount: 10,
+            repeat: -1,
+          },
+        },
+        "<",
+      );
+      cloudsTimeline.current.to(
+        ".mrak",
+        {
+          x: `-${pageContainer.current.getBoundingClientRect().width}px`,
+          duration: 55,
+          stagger: {
+            grid: "auto",
+            from: "random",
+            amount: 40,
+            repeat: -1,
+          },
+        },
+        "<",
+      );
+    },
+    { scope: pageContainer.current },
+  );
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const container = useRef<HTMLElement | any>();
+  const tl = useRef<GSAPTimeline | any>();
+  const word = useRef<HTMLElement | any>();
+
+  const toggleTimeline = () => {
+    tl.current.reversed(!tl.current.reversed());
+  };
+
+  const colors = [
+    "bg-stone-100",
+    "bg-stone-200",
+    "bg-stone-300",
+    "bg-stone-400",
+    "bg-stone-500",
+    "bg-stone-600",
+    "bg-stone-700",
+    "bg-stone-800",
+    "bg-stone-900",
+  ];
+
+  useGSAP(
+    () => {
+      tl.current = gsap.timeline({ onComplete: () => setIsLoading(false) });
+      // .pause();
+      titles.slice(0, titles.length - 1).forEach((title, i) =>
+        tl.current.to(word.current, {
+          duration: i === titles.length - 2 ? 3 : 1,
+          text: titles[i + 1],
+          ease: "none",
+        }),
+      );
+      tl.current.to(container.current, {
+        opacity: 0,
+        duration: 3,
+      });
+    },
+    { scope: container.current },
+  );
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <>
+      <div ref={container}>
+        <main
+          ref={pageContainer}
+          className={cn(
+            "group relative flex h-full w-full flex-nowrap overflow-hidden overscroll-none",
+            `${libre_baskerville.className}`,
+          )}
+        >
+          <section
+            className={cn(
+              "section relative isolate z-20 flex h-full min-h-screen w-full gap-10 overflow-hidden overscroll-none sm:w-[500px]",
+            )}
+            ref={sectionContainer}
           >
-            By{" "}
             <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+              src={topleft}
+              alt="vector"
+              aria-hidden
+              className="absolute left-0 top-0 z-10 w-full sm:w-[500px]"
             />
-          </a>
+
+            <div
+              ref={leavesContainer}
+              className="pointer-events-none absolute z-0 h-full w-full"
+            >
+              <Image
+                src={pavukimg}
+                alt="pavuk"
+                aria-hidden
+                className="pointer-events-none absolute left-[200px] top-0 -z-10 w-[120px] -translate-y-full"
+                ref={pavuk}
+              />
+              <Image
+                src={javor1}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[10px] top-0 aspect-square w-[20px] rotate-90"
+              />
+              <Image
+                src={javor2}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[85px] top-10 aspect-square w-[25px] rotate-180"
+              />
+              <Image
+                src={javor3}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[120px] top-20 aspect-square w-[20px]"
+              />
+              <Image
+                src={javor1}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[140px] top-0 aspect-square w-[20px] rotate-90"
+              />
+              <Image
+                src={javor2}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[185px] top-20 aspect-square w-[30px] rotate-180"
+              />
+              <Image
+                src={javor3}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[200px] top-10 aspect-square w-[20px]"
+              />
+              <Image
+                src={javor2}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[280px] top-10 aspect-square w-[30px] rotate-180"
+              />
+              <Image
+                src={javor3}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[310px] top-20 aspect-square w-[40px]"
+              />
+
+              <Image
+                src={javor2}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[320px] top-0 aspect-square w-[20px] rotate-180"
+              />
+              <Image
+                src={javor1}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[400px] top-20 aspect-square w-[20px] rotate-90"
+              />
+              <Image
+                src={javor1}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[440px] top-0 aspect-square w-[25px] rotate-90"
+              />
+              <Image
+                src={javor1}
+                alt="leaf"
+                aria-hidden
+                className="leaf absolute left-[480px] top-10 z-10 aspect-square w-[20px] rotate-90"
+              />
+            </div>
+            <div className="absolute left-16 top-4 isolate z-10 mr-8 mt-8 w-[300px] sm:left-20 sm:top-0 sm:w-[500px]">
+              <Image
+                src={labelrough}
+                alt="paper"
+                aria-hidden
+                className="absolute inset-0 w-[300px]"
+              />
+              <h2
+                className={cn(
+                  "absolute left-[80px] top-4 text-3xl italic leading-none tracking-tighter",
+                  `${lora.className}`,
+                )}
+              >
+                {pavuk_putnik.heading}
+              </h2>
+            </div>
+            <div className="absolute -z-10 h-full w-full sm:w-[500px]">
+              <div className="absolute -bottom-[120px] h-[500px] w-full sm:h-[calc(100%-120px)] sm:w-[500px]"></div>
+              <div className="absolute -bottom-[120px] isolate h-[500px] w-full -rotate-1 flex-col sm:h-[calc(100%-120px)] sm:w-[500px]">
+                <div
+                  className="scroller-none relative left-1/2 top-[68px] z-10 h-[230px] w-[350px] max-w-lg -translate-x-1/2 self-center overflow-auto sm:left-36 sm:translate-x-0"
+                  ref={poemContainer}
+                >
+                  <ul
+                    ref={list}
+                    className="ml-16 mt-12 flex flex-col gap-7 sm:ml-0 sm:gap-[30px]"
+                  >
+                    {pavuk_putnik.poem.map((block) => (
+                      <li key={block.id}>
+                        <p>
+                          {block.lines.map((line, i) => (
+                            <span
+                              key={i}
+                              className="line block text-xl leading-[1.8] sm:text-2xl sm:leading-[1.58]"
+                            >
+                              {line}
+                            </span>
+                          ))}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Image
+                  src={paperlines}
+                  alt="paper"
+                  aria-hidden
+                  className="absolute left-1/2 top-0 h-full w-[350px] -translate-x-1/2 sm:left-[50px] sm:w-[460px] sm:translate-x-0"
+                />
+                <div
+                  className="pointer-events-none absolute h-full w-full bg-gradient-to-t from-black/30 to-transparent sm:left-[50px] sm:w-[455px]"
+                  aria-hidden={true}
+                ></div>
+                <div
+                  className="pointer-events-none absolute h-full w-full bg-gradient-to-t from-black/60 to-transparent sm:left-[50px] sm:w-[455px]"
+                  aria-hidden={true}
+                ></div>
+              </div>
+            </div>
+          </section>
+          <Image
+            src={person}
+            alt="person"
+            aria-hidden
+            className="peer absolute bottom-[10px] right-[0px] z-40 w-[140px] sm:left-[400px] sm:right-[0] sm:w-[200px]"
+          />
+          <div className="peer-hover:opacity-1 absolute bottom-64 left-[540px] z-40 rounded-3xl bg-stone-100 px-5 py-3 font-bold opacity-0">
+            scroll down
+          </div>
+          <Image
+            src={trava}
+            alt="trava"
+            aria-hidden
+            className="fixed bottom-[-20px] left-[0px] z-40 w-[600px] scale-x-[-1]"
+          />
+          <Image
+            src={trava}
+            alt="trava"
+            aria-hidden
+            className="fixed bottom-[-20px] left-[580px] z-40 w-[600px]"
+          />
+          <Image
+            src={trava}
+            alt="trava"
+            aria-hidden
+            className="fixed bottom-[-20px] left-[1180px] z-40 w-[600px] scale-x-[-1]"
+          />
+          <div className="pointer-events-none absolute inset-0 isolate z-10">
+            <Image
+              src={sarkanimg}
+              alt="sarkan"
+              aria-hidden
+              className="pointer-events-none absolute left-0 top-1/2 -z-10 w-[140px] -translate-x-full"
+              ref={sarkan}
+            />
+
+            <Image
+              src={smallhouse}
+              alt="smallhouse"
+              aria-hidden
+              className="fixed bottom-[30px] right-[165px] z-10 max-h-screen w-[170px]"
+            />
+            <Image
+              src={smallhouse}
+              alt="smallhouse"
+              aria-hidden
+              className="fixed bottom-[30px] right-[300px] z-30 max-h-screen w-[200px]"
+            />
+            <Image
+              src={tallhouse}
+              alt="tallhouse"
+              aria-hidden
+              className="fixed bottom-[-20px] right-[0px] z-10 max-h-screen w-[120px]"
+            />
+            <Image
+              src={hills}
+              alt="hills"
+              aria-hidden
+              className="absolute bottom-[0px] right-[490px] z-10 w-[400px]"
+            />
+            <Image
+              src={hill1}
+              alt="hill1"
+              aria-hidden
+              className="absolute bottom-[0px] right-[650px] z-10 w-[400px]"
+            />
+            <Image
+              src={hill1}
+              alt="hill1"
+              aria-hidden
+              className="absolute bottom-[0px] right-[950px] z-10 w-[400px] scale-x-[-1]"
+            />
+            <Image
+              src={hill1}
+              alt="hill1"
+              aria-hidden
+              className="absolute bottom-[20px] right-[80px] z-0 w-[200px] scale-x-[-1]"
+            />
+            <Image
+              src={mrak2}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[0px] absolute right-0 top-[20px] z-10 w-28 translate-x-full"
+            />
+            <Image
+              src={mrak2}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[100px] absolute right-0 top-[15px] z-10 w-32 translate-x-full"
+            />
+            <Image
+              src={mrak1}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[240px] absolute right-0 top-[50px] z-0 w-24 translate-x-full"
+            />
+            <Image
+              src={mrak2}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[300px] absolute right-0 top-[20px] z-10 w-24 translate-x-full"
+            />
+            <Image
+              src={mrak2}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[500px] absolute right-0 top-[40px] z-10 w-20 translate-x-full"
+            />
+            <Image
+              src={mrak2}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[560px] absolute right-0 top-[40px] z-10 w-16 translate-x-full"
+            />
+            <Image
+              src={mrak1}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[686px] absolute right-0 top-[30px] z-0 w-16 translate-x-full"
+            />
+            <Image
+              src={mrak1}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[620px] absolute right-0 top-[20px] z-0 w-12 translate-x-full"
+            />
+            <Image
+              src={mrak2}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[720px] absolute right-0 top-[20px] z-0 w-12 translate-x-full"
+            />
+            <Image
+              src={mrak2}
+              alt="mrak"
+              aria-hidden
+              className="mrak //right-[890px] absolute right-0 top-[10px] z-0 w-20 translate-x-full"
+            />
+          </div>
+          <Image
+            src={skies}
+            alt="skies"
+            aria-hidden
+            className="absolute right-[0px] top-[0px] z-0 object-cover"
+          />
+          {/* </div> */}
+        </main>
+      </div>
+      {isLoading && (
+        <div
+          className="fixed inset-0 isolate z-50 flex h-full w-full flex-col items-center justify-center bg-stone-200 text-stone-900"
+          ref={container}
+        >
+          <p ref={word} className="text-center text-5xl font-bold sm:text-8xl">
+            {titles[0]}
+          </p>
+          <Image
+            src={trava}
+            alt="trava"
+            aria-hidden
+            className="fixed bottom-[-20px] left-[0px] z-40 w-[600px] scale-x-[-1]"
+          />
+          <Image
+            src={trava}
+            alt="trava"
+            aria-hidden
+            className="fixed bottom-[-20px] left-[580px] z-40 w-[600px]"
+          />
+          <Image
+            src={trava}
+            alt="trava"
+            aria-hidden
+            className="fixed bottom-[-20px] left-[1180px] z-40 w-[600px] scale-x-[-1]"
+          />
         </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      )}
+    </>
   );
 }

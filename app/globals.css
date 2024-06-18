@@ -2,7 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+@layer utilities {
+  .clip-full {
+    clip-path: polygon(0 100%, 100% 100%, 100% 0, 0 0);
+  }
+  .clip-none {
+    clip-path: polygon(0 100%, 100% 100%, 100% 25%, 0 25%);
+  }
+  .scroller-none {
+    scrollbar-width: none;
+  }
+}
+
+/* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -30,4 +42,4 @@ body {
   .text-balance {
     text-wrap: balance;
   }
-}
+} */
