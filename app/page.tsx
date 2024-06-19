@@ -210,7 +210,7 @@ export default function Page() {
 
   return (
     <>
-      <main ref={container} className="h-screen">
+      <main ref={container} className="h-full">
         <section
           ref={pageContainer}
           className={cn(
@@ -424,19 +424,19 @@ export default function Page() {
               src={smallhouse}
               alt="smallhouse"
               aria-hidden
-              className="fixed bottom-[30px] right-[165px] z-10 max-h-screen w-[170px]"
+              className="fixed bottom-[30px] right-[165px] z-10 w-[170px]"
             />
             <Image
               src={smallhouse}
               alt="smallhouse"
               aria-hidden
-              className="fixed bottom-[30px] right-[300px] z-30 max-h-screen w-[200px]"
+              className="fixed bottom-[30px] right-[300px] z-30 w-[200px]"
             />
             <Image
               src={tallhouse}
               alt="tallhouse"
               aria-hidden
-              className="fixed bottom-[-20px] right-[0px] z-10 max-h-screen w-[120px]"
+              className="fixed bottom-[-20px] right-[0px] z-10 w-[120px]"
             />
             <Image
               src={hills}
