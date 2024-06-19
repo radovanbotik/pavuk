@@ -210,7 +210,7 @@ export default function Page() {
 
   return (
     <>
-      <main ref={container}>
+      <main ref={container} className="h-full w-full">
         <section
           ref={pageContainer}
           className={cn(

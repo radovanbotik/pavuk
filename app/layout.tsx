@@ -15,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${lora.className} relative h-screen w-full italic`}>
+      <body
+        className={`${lora.className} relative h-screen w-full overflow-hidden italic`}
+      >
         {children}
       </body>
     </html>
