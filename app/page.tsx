@@ -32,6 +32,9 @@ import hills from "../public/assets/green/hills.png";
 import hill1 from "../public/assets/green/hill1.png";
 import labelrough from "../public/assets/paper/labelrough.png";
 import person from "../public/assets/people/person.png";
+import bird1 from "../public/assets/animals/bird1.png";
+import bird2 from "../public/assets/animals/bird2.png";
+import bird3 from "../public/assets/animals/bird3.png";
 
 import {
   archivo_narrow,
@@ -48,32 +51,6 @@ if (typeof window !== "undefined") {
 }
 
 // ---------------------------------------------
-
-// if (typeof window !== "undefined") {
-//   gsap.registerPlugin(useGSAP, TextPlugin);
-// }
-
-//use slovnicek instead of title
-//use background image or video as hading background text
-// slovnicek on hover can sscramble into meaning
-
-// const titles = [
-//   "Trnava",
-//   "Zvonárik Tadeáš",
-//   "Igricova pieseň",
-//   "Sestra Izabela",
-//   "Janičiar",
-//   "Majster Jakub",
-//   "Ondrej a Ráchel",
-//   "Anntónio Spazzo",
-//   "Mlynárová dcéra",
-//   "Sambucusov dom",
-//   "Katovo šťastie",
-//   "Sedem koscov",
-//   "Požiar",
-//   "Pekárová láska",
-//   "Hlas zvonu",
-// ];
 
 const titles = [
   "Snenie",
@@ -94,6 +71,8 @@ export default function Page() {
   const scrollTimeline = useRef<GSAPTimeline | any>();
   const leavesTimeline = useRef<GSAPTimeline | any>();
   const cloudsTimeline = useRef<GSAPTimeline | any>();
+  const birdsLeftTimeline = useRef<GSAPTimeline | any>();
+  const birdsRightTimeline = useRef<GSAPTimeline | any>();
 
   useGSAP(
     () => {
@@ -113,15 +92,15 @@ export default function Page() {
               ease: "sine.inOut",
             });
           }
-          if (Math.floor(scrollTimeline.current.progress() * 100) === 60) {
-            gsap.to(pavuk.current, {
-              y: pageContainer.current.getBoundingClientRect().height,
-              x: 300,
-              rotate: 360,
-              duration: 15,
-              ease: "sine.inOut",
-            });
-          }
+          // if (Math.floor(scrollTimeline.current.progress() * 100) === 60) {
+          //   gsap.to(pavuk.current, {
+          //     y: pageContainer.current.getBoundingClientRect().height,
+          //     x: 300,
+          //     rotate: 360,
+          //     duration: 15,
+          //     ease: "sine.inOut",
+          //   });
+          // }
         },
         scrollTrigger: {
           scroller: poemContainer.current,
@@ -134,6 +113,8 @@ export default function Page() {
       });
       leavesTimeline.current = gsap.timeline({});
       cloudsTimeline.current = gsap.timeline({});
+      birdsLeftTimeline.current = gsap.timeline({});
+      birdsRightTimeline.current = gsap.timeline({});
 
       paragraphs.forEach((paragraph, i) =>
         scrollTimeline.current.from(paragraph, {
@@ -154,15 +135,45 @@ export default function Page() {
         },
         "<",
       );
+      birdsLeftTimeline.current.to(
+        ".birdleft",
+        {
+          x: `${pageContainer.current.getBoundingClientRect().width}px`,
+          duration: 80,
+          stagger: {
+            grid: "auto",
+            from: "random",
+            amount: 60,
+            repeat: -1,
+            y: -30,
+          },
+        },
+        "<",
+      );
+      birdsRightTimeline.current.to(
+        ".birdright",
+        {
+          x: `-${pageContainer.current.getBoundingClientRect().width}px`,
+          duration: 110,
+          stagger: {
+            grid: "auto",
+            from: "random",
+            amount: 90,
+            repeat: -1,
+            y: -50,
+          },
+        },
+        "<",
+      );
       cloudsTimeline.current.to(
         ".mrak",
         {
           x: `-${pageContainer.current.getBoundingClientRect().width}px`,
-          duration: 55,
+          duration: 180,
           stagger: {
             grid: "auto",
             from: "random",
-            amount: 40,
+            amount: 160,
             repeat: -1,
           },
         },
@@ -177,22 +188,6 @@ export default function Page() {
   const container = useRef<HTMLElement | any>();
   const tl = useRef<GSAPTimeline | any>();
   const word = useRef<HTMLElement | any>();
-
-  const toggleTimeline = () => {
-    tl.current.reversed(!tl.current.reversed());
-  };
-
-  const colors = [
-    "bg-stone-100",
-    "bg-stone-200",
-    "bg-stone-300",
-    "bg-stone-400",
-    "bg-stone-500",
-    "bg-stone-600",
-    "bg-stone-700",
-    "bg-stone-800",
-    "bg-stone-900",
-  ];
 
   useGSAP(
     () => {
@@ -215,17 +210,17 @@ export default function Page() {
 
   return (
     <>
-      <div ref={container}>
-        <main
+      <main ref={container} className="h-screen">
+        <section
           ref={pageContainer}
           className={cn(
             "group relative flex h-full w-full flex-nowrap overflow-hidden overscroll-none",
             `${libre_baskerville.className}`,
           )}
         >
-          <section
+          <div
             className={cn(
-              "section relative isolate z-20 flex h-full min-h-screen w-full gap-10 overflow-hidden overscroll-none sm:w-[500px]",
+              "section relative isolate z-20 flex h-full w-full gap-10 overflow-hidden overscroll-none sm:w-[500px]",
             )}
             ref={sectionContainer}
           >
@@ -240,13 +235,13 @@ export default function Page() {
               ref={leavesContainer}
               className="pointer-events-none absolute z-0 h-full w-full"
             >
-              <Image
+              {/* <Image
                 src={pavukimg}
                 alt="pavuk"
                 aria-hidden
                 className="pointer-events-none absolute left-[200px] top-0 -z-10 w-[120px] -translate-y-full"
                 ref={pavuk}
-              />
+              /> */}
               <Image
                 src={javor1}
                 alt="leaf"
@@ -284,7 +279,7 @@ export default function Page() {
                 className="leaf absolute left-[200px] top-10 aspect-square w-[20px]"
               />
               <Image
-                src={javor2}
+                src={javor4}
                 alt="leaf"
                 aria-hidden
                 className="leaf absolute left-[280px] top-10 aspect-square w-[30px] rotate-180"
@@ -315,7 +310,7 @@ export default function Page() {
                 className="leaf absolute left-[440px] top-0 aspect-square w-[25px] rotate-90"
               />
               <Image
-                src={javor1}
+                src={javor4}
                 alt="leaf"
                 aria-hidden
                 className="leaf absolute left-[480px] top-10 z-10 aspect-square w-[20px] rotate-90"
@@ -341,7 +336,7 @@ export default function Page() {
               <div className="absolute -bottom-[120px] h-[500px] w-full sm:h-[calc(100%-120px)] sm:w-[500px]"></div>
               <div className="absolute -bottom-[120px] isolate h-[500px] w-full -rotate-1 flex-col sm:h-[calc(100%-120px)] sm:w-[500px]">
                 <div
-                  className="scroller-none relative left-1/2 top-[68px] z-10 h-[230px] w-[350px] max-w-lg -translate-x-1/2 self-center overflow-auto sm:left-36 sm:translate-x-0"
+                  className="scroller-none relative left-1/2 top-[68px] z-10 h-[230px] w-[350px] max-w-lg -translate-x-1/2 cursor-cell self-center overflow-auto sm:left-36 sm:translate-x-0"
                   ref={poemContainer}
                 >
                   <ul
@@ -380,15 +375,23 @@ export default function Page() {
                 ></div>
               </div>
             </div>
-          </section>
+          </div>
           <Image
             src={person}
             alt="person"
             aria-hidden
             className="peer absolute bottom-[10px] right-[0px] z-40 w-[140px] sm:left-[400px] sm:right-[0] sm:w-[200px]"
           />
-          <div className="peer-hover:opacity-1 absolute bottom-64 left-[540px] z-40 rounded-3xl bg-stone-100 px-5 py-3 font-bold opacity-0">
-            scroll down
+          <div
+            className={`absolute bottom-48 right-[10px] z-40 max-w-[150px] rounded-3xl bg-stone-300/60 p-3 opacity-0 peer-hover:opacity-100 sm:bottom-64 sm:left-[540px] sm:max-w-[200px] sm:bg-stone-200/30 sm:px-6 sm:py-4`}
+          >
+            <p className="hidden text-sm sm:block">
+              Prečítaj si celý úryvok. Umiestni kurzor myši na papier a listuj
+              nadol.
+            </p>
+            <p className="block text-xs sm:hidden">
+              Prečítaj si celý úryvok. Umiestni prst na papier a listuj nadol.
+            </p>
           </div>
           <Image
             src={trava}
@@ -519,18 +522,41 @@ export default function Page() {
               aria-hidden
               className="mrak //right-[890px] absolute right-0 top-[10px] z-0 w-20 translate-x-full"
             />
+            <Image
+              src={skies}
+              alt="skies"
+              aria-hidden
+              className="absolute right-[0px] top-[0px] -z-20 object-cover"
+            />
+            <Image
+              src={bird1}
+              alt="bird"
+              aria-hidden
+              className="birdright absolute right-0 top-[50px] -z-10 w-8 translate-x-full"
+            />
+            <Image
+              src={bird2}
+              alt="bird"
+              aria-hidden
+              className="birdright absolute right-0 top-[140px] z-10 w-6 translate-x-full rotate-12"
+            />
+            <Image
+              src={bird2}
+              alt="bird"
+              aria-hidden
+              className="birdleft z-00 absolute left-0 top-[20px] w-5 -translate-x-full -rotate-45 scale-x-[-1]"
+            />
+            <Image
+              src={bird3}
+              alt="bird"
+              aria-hidden
+              className="birdleft absolute left-0 top-[120px] z-10 w-10 -translate-x-full rotate-45 scale-x-[-1]"
+            />
           </div>
-          <Image
-            src={skies}
-            alt="skies"
-            aria-hidden
-            className="absolute right-[0px] top-[0px] z-0 object-cover"
-          />
-          {/* </div> */}
-        </main>
-      </div>
+        </section>
+      </main>
       {isLoading && (
-        <div
+        <section
           className="fixed inset-0 isolate z-50 flex h-full w-full flex-col items-center justify-center bg-stone-200 text-stone-900"
           ref={container}
         >
@@ -555,7 +581,7 @@ export default function Page() {
             aria-hidden
             className="fixed bottom-[-20px] left-[1180px] z-40 w-[600px] scale-x-[-1]"
           />
-        </div>
+        </section>
       )}
     </>
   );
