@@ -380,7 +380,7 @@ export default function Page() {
             src={person}
             alt="person"
             aria-hidden
-            className="peer absolute bottom-[0px] right-[0px] z-40 w-[140px] sm:left-[400px] sm:right-[0] sm:w-[200px]"
+            className="peer fixed bottom-[0px] right-[0px] z-40 w-[140px] sm:left-[400px] sm:right-[0] sm:w-[200px]"
           />
           <div
             className={`absolute bottom-48 right-[10px] z-40 max-w-[150px] rounded-3xl bg-stone-300/60 p-3 opacity-0 peer-hover:opacity-100 sm:bottom-64 sm:left-[540px] sm:max-w-[200px] sm:bg-stone-200/30 sm:px-6 sm:py-4`}
