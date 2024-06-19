@@ -210,11 +210,11 @@ export default function Page() {
 
   return (
     <>
-      <main ref={container} className="h-full">
+      <main ref={container}>
         <section
           ref={pageContainer}
           className={cn(
-            "group relative flex h-full w-full flex-nowrap overflow-hidden overscroll-none",
+            "group relative h-full w-full overflow-hidden overscroll-none",
             `${libre_baskerville.className}`,
           )}
         >
