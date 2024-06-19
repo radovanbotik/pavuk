@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-screen w-full">
-      <body className={`${lora.className} relative h-full w-full italic`}>
+    <html lang="en">
+      <body className={`${lora.className} relative h-screen w-full italic`}>
         {children}
       </body>
     </html>
